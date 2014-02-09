@@ -10,12 +10,9 @@ import javax.inject.Inject;
 
 import org.jboss.forge.addon.configuration.Configuration;
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
-import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.facets.PackagingFacet;
-import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
 import org.jboss.forge.addon.resource.DirectoryResource;
 import org.jboss.forge.addon.resource.FileResource;
-import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
@@ -25,13 +22,13 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
 
 @FacetConstraint(SapHanaCloudFacet.class)
-public class DeployLocallyCommand extends AbstractProjectCommand {
+public class DeployLocallyCommand extends AbstractSapHanaCloudCommand {
 
     static final String PICKUP_DIRECTORY = "server/pickup";
 
     @Override
     public UICommandMetadata getMetadata(UIContext context) {
-	return Metadata.forCommand(DeployLocallyCommand.class).name(
+	return Metadata.from(super.getMetadata(context), this.getClass()).name(
 		"SAPHCP: Deploy Locally");
     }
 
@@ -42,12 +39,9 @@ public class DeployLocallyCommand extends AbstractProjectCommand {
     @Inject
     private Configuration projectConfig;
     
-    @Inject
-    private ResourceFactory resourceFactory;
-    
     @Override
     public Result execute(UIExecutionContext context) {
-	DirectoryResource sdkLocation = resourceFactory.create(DirectoryResource.class, new File(projectConfig.getString(HANA_CLOUD_SDK)));
+	DirectoryResource sdkLocation = toDirectoryResource(projectConfig.getString(HANA_CLOUD_SDK));
         PackagingFacet packagingFacet = getSelectedProject(context).getFacet(PackagingFacet.class);
         File deployableArchive = new File(packagingFacet.getFinalArtifact().getFullyQualifiedName());
         FileResource<?> deployFile = (FileResource<?>) sdkLocation.getChild(PICKUP_DIRECTORY).getChild(
@@ -59,17 +53,5 @@ public class DeployLocallyCommand extends AbstractProjectCommand {
 	}
 	
 	return Results.success("The project was deployed successfully on the local runtime");
-    }
-
-    @Override
-    protected boolean isProjectRequired() {
-	// TODO Auto-generated method stub
-	return false;
-    }
-
-    @Override
-    protected ProjectFactory getProjectFactory() {
-	// TODO Auto-generated method stub
-	return null;
     }
 }

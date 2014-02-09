@@ -1,13 +1,14 @@
 package com.sap.cloud.forge;
 
-import static com.sap.cloud.forge.ConfigurationConstants.*;
+import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_ACCOUNT;
+import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_SDK;
+import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_USER_NAME;
 
 import javax.inject.Inject;
 
 import org.jboss.forge.addon.configuration.Configuration;
 import org.jboss.forge.addon.facets.FacetFactory;
-import org.jboss.forge.addon.projects.ProjectFactory;
-import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
+import org.jboss.forge.addon.projects.facets.PackagingFacet;
 import org.jboss.forge.addon.resource.DirectoryResource;
 import org.jboss.forge.addon.resource.ResourceException;
 import org.jboss.forge.addon.ui.context.UIBuilder;
@@ -21,7 +22,7 @@ import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
 
-public class SetupCommand extends AbstractProjectCommand {
+public class SetupCommand extends AbstractSapHanaCloudCommand {
 
     @Inject
     private FacetFactory facetFactory;
@@ -40,7 +41,8 @@ public class SetupCommand extends AbstractProjectCommand {
 
     @Override
     public UICommandMetadata getMetadata(UIContext context) {
-	return Metadata.forCommand(SetupCommand.class).name("SAPHCP: Setup");
+	return Metadata.from(super.getMetadata(context), this.getClass())
+		.name("SAPHCP: Setup");
     }
 
     @Override
@@ -60,6 +62,11 @@ public class SetupCommand extends AbstractProjectCommand {
 	return Results.success("SAP HANA Cloud configured successfully for this project!");
     }
     
+    @Override
+    public boolean isEnabled(UIContext context) {
+	return super.isEnabled(context) && "war".equals(getSelectedProject(context).getFacet(PackagingFacet.class).getPackagingType());
+    }
+
     private static final String SDK_VALIDATION_ERROR_MSG = "The specified directory is not a valid SAP HCP SDK";
 
     @Override
@@ -81,18 +88,5 @@ public class SetupCommand extends AbstractProjectCommand {
 		validator.addValidationError(sdkLocation, SDK_VALIDATION_ERROR_MSG);
 	    }
 	}
-    }
-
-    @Override
-    protected boolean isProjectRequired() {
-	return true;
-    }
-
-    @Inject
-    private ProjectFactory projectFactory;
-
-    @Override
-    protected ProjectFactory getProjectFactory() {
-	return projectFactory;
     }
 }
