@@ -41,52 +41,54 @@ public class SetupCommand extends AbstractSapHanaCloudCommand {
 
     @Override
     public UICommandMetadata getMetadata(UIContext context) {
-	return Metadata.from(super.getMetadata(context), this.getClass())
-		.name("SAPHCP: Setup");
+        return Metadata.from(super.getMetadata(context), this.getClass()).name("SAPHCP: Setup");
     }
 
     @Override
     public void initializeUI(UIBuilder builder) throws Exception {
-	builder.add(sdkLocation).add(userName).add(account);
+        builder.add(sdkLocation).add(userName).add(account);
     }
-    
+
     @Inject
     private Configuration projectConfig;
 
     @Override
     public Result execute(UIExecutionContext context) {
-        projectConfig.setProperty(HANA_CLOUD_SDK, sdkLocation.getValue().getFullyQualifiedName().replace("\\/", "/"));
+        projectConfig.setProperty(HANA_CLOUD_SDK, sdkLocation.getValue().getFullyQualifiedName()
+                .replace("\\/", "/"));
         projectConfig.setProperty(HANA_CLOUD_ACCOUNT, account.getValue());
         projectConfig.setProperty(HANA_CLOUD_USER_NAME, userName.getValue());
-	facetFactory.install(getSelectedProject(context), SapHanaCloudFacet.class);
-	return Results.success("SAP HANA Cloud configured successfully for this project!");
+        facetFactory.install(getSelectedProject(context), SapHanaCloudFacet.class);
+        return Results.success("SAP HANA Cloud configured successfully for this project!");
     }
-    
+
     @Override
     public boolean isEnabled(UIContext context) {
-	return super.isEnabled(context) && "war".equals(getSelectedProject(context).getFacet(PackagingFacet.class).getPackagingType());
+        return super.isEnabled(context)
+                && "war".equals(getSelectedProject(context).getFacet(PackagingFacet.class)
+                        .getPackagingType());
     }
 
     private static final String SDK_VALIDATION_ERROR_MSG = "The specified directory is not a valid SAP HCP SDK";
 
     @Override
     public void validate(UIValidationContext validator) {
-	super.validate(validator);
-	
-	DirectoryResource sdk = sdkLocation.getValue();
-	if (sdk != null) {
-	    try {
-		DirectoryResource toolsDir = sdk.getChildDirectory("tools");
-		if (!toolsDir.exists()) {
-		    validator.addValidationError(sdkLocation, SDK_VALIDATION_ERROR_MSG);
-		}
-		
-		if (!toolsDir.getChild("neo.sh").exists()) {
-		    validator.addValidationError(sdkLocation, SDK_VALIDATION_ERROR_MSG);
-		}
-	    } catch (ResourceException re) {
-		validator.addValidationError(sdkLocation, SDK_VALIDATION_ERROR_MSG);
-	    }
-	}
+        super.validate(validator);
+
+        DirectoryResource sdk = sdkLocation.getValue();
+        if (sdk != null) {
+            try {
+                DirectoryResource toolsDir = sdk.getChildDirectory("tools");
+                if (!toolsDir.exists()) {
+                    validator.addValidationError(sdkLocation, SDK_VALIDATION_ERROR_MSG);
+                }
+
+                if (!toolsDir.getChild("neo.sh").exists()) {
+                    validator.addValidationError(sdkLocation, SDK_VALIDATION_ERROR_MSG);
+                }
+            } catch (ResourceException re) {
+                validator.addValidationError(sdkLocation, SDK_VALIDATION_ERROR_MSG);
+            }
+        }
     }
 }

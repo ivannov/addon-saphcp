@@ -10,8 +10,7 @@ import org.jboss.forge.addon.projects.ProjectFacet;
 import org.jboss.forge.addon.projects.dependencies.DependencyInstaller;
 import org.jboss.forge.addon.projects.facets.DependencyFacet;
 
-public class SapHanaCloudFacet extends AbstractFacet<Project> implements
-	ProjectFacet {
+public class SapHanaCloudFacet extends AbstractFacet<Project> implements ProjectFacet {
 
     static final String SDK_DEPENDENCY = "com.sap.cloud:neo-javaee6-wp-api:2.25.7";
 
@@ -19,25 +18,25 @@ public class SapHanaCloudFacet extends AbstractFacet<Project> implements
 
     @Inject
     public SapHanaCloudFacet(DependencyInstaller dependencyInstaller) {
-	this.dependencyInstaller = dependencyInstaller;
+        this.dependencyInstaller = dependencyInstaller;
     }
 
     @Override
     public boolean install() {
-	if (!isInstalled()) {
-	    dependencyInstaller.install(getFaceted(), buildHanaSdkDependency());
-	}
-	return false;
+        if (!isInstalled()) {
+            dependencyInstaller.install(getFaceted(), buildHanaSdkDependency());
+        }
+        return false;
     }
 
     @Override
     public boolean isInstalled() {
-	return getFaceted().getFacet(DependencyFacet.class)
-		.hasDirectDependency(buildHanaSdkDependency());
+        return getFaceted().getFacet(DependencyFacet.class).hasDirectDependency(
+                buildHanaSdkDependency());
     }
 
     private Dependency buildHanaSdkDependency() {
-	return DependencyBuilder.create(SDK_DEPENDENCY);
+        return DependencyBuilder.create(SDK_DEPENDENCY);
     }
 
 }

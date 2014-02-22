@@ -28,8 +28,8 @@ public class DeployLocallyCommand extends AbstractSapHanaCloudCommand {
 
     @Override
     public UICommandMetadata getMetadata(UIContext context) {
-	return Metadata.from(super.getMetadata(context), this.getClass()).name(
-		"SAPHCP: Deploy Locally");
+        return Metadata.from(super.getMetadata(context), this.getClass()).name(
+                "SAPHCP: Deploy Locally");
     }
 
     @Override
@@ -38,20 +38,20 @@ public class DeployLocallyCommand extends AbstractSapHanaCloudCommand {
 
     @Inject
     private Configuration projectConfig;
-    
+
     @Override
     public Result execute(UIExecutionContext context) {
-	DirectoryResource sdkLocation = toDirectoryResource(projectConfig.getString(HANA_CLOUD_SDK));
+        DirectoryResource sdkLocation = toDirectoryResource(projectConfig.getString(HANA_CLOUD_SDK));
         PackagingFacet packagingFacet = getSelectedProject(context).getFacet(PackagingFacet.class);
         File deployableArchive = new File(packagingFacet.getFinalArtifact().getFullyQualifiedName());
-        FileResource<?> deployFile = (FileResource<?>) sdkLocation.getChild(PICKUP_DIRECTORY).getChild(
-                deployableArchive.getName());
+        FileResource<?> deployFile = (FileResource<?>) sdkLocation.getChild(PICKUP_DIRECTORY)
+                .getChild(deployableArchive.getName());
         try {
-	    deployFile.setContents(new FileInputStream(deployableArchive));
-	} catch (FileNotFoundException e) {
-	    Results.fail(e.getMessage());
-	}
-	
-	return Results.success("The project was deployed successfully on the local runtime");
+            deployFile.setContents(new FileInputStream(deployableArchive));
+        } catch (FileNotFoundException e) {
+            Results.fail(e.getMessage());
+        }
+
+        return Results.success("The project was deployed successfully on the local runtime");
     }
 }

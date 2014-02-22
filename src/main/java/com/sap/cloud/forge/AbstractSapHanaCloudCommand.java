@@ -13,18 +13,16 @@ import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 
-public abstract class AbstractSapHanaCloudCommand extends
-	AbstractProjectCommand {
+public abstract class AbstractSapHanaCloudCommand extends AbstractProjectCommand {
 
     @Override
-    public UICommandMetadata getMetadata(UIContext context)
-    {
-       return Metadata.forCommand(getClass()).category(Categories.create("Cloud"));
+    public UICommandMetadata getMetadata(UIContext context) {
+        return Metadata.forCommand(getClass()).category(Categories.create("Cloud"));
     }
 
     @Override
     protected boolean isProjectRequired() {
-	return true;
+        return true;
     }
 
     @Inject
@@ -32,14 +30,14 @@ public abstract class AbstractSapHanaCloudCommand extends
 
     @Override
     protected ProjectFactory getProjectFactory() {
-	return projectFactory;
+        return projectFactory;
     }
-    
+
     @Inject
     private ResourceFactory resourceFactory;
-    
+
     protected DirectoryResource toDirectoryResource(String directoryPath) {
-	return resourceFactory.create(DirectoryResource.class, new File(directoryPath));
+        return resourceFactory.create(DirectoryResource.class, new File(directoryPath));
     }
 
 }
