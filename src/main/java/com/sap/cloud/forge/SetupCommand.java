@@ -7,7 +7,9 @@ import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_USER_NAME;
 import javax.inject.Inject;
 
 import org.jboss.forge.addon.configuration.Configuration;
+import org.jboss.forge.addon.configuration.facets.ConfigurationFacet;
 import org.jboss.forge.addon.facets.FacetFactory;
+import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.PackagingFacet;
 import org.jboss.forge.addon.resource.DirectoryResource;
 import org.jboss.forge.addon.resource.ResourceException;
@@ -32,11 +34,11 @@ public class SetupCommand extends AbstractSapHanaCloudCommand {
     private UIInput<DirectoryResource> sdkLocation;
 
     @Inject
-    @WithAttributes(label = "User name", defaultValue = "master")
+    @WithAttributes(label = "User name", required = true)
     private UIInput<String> userName;
 
     @Inject
-    @WithAttributes(label = "Account", defaultValue = "false")
+    @WithAttributes(label = "Account", required = true)
     private UIInput<String> account;
 
     @Override
@@ -49,16 +51,15 @@ public class SetupCommand extends AbstractSapHanaCloudCommand {
         builder.add(sdkLocation).add(userName).add(account);
     }
 
-    @Inject
-    private Configuration projectConfig;
-
     @Override
     public Result execute(UIExecutionContext context) {
+        Project selectedProject = getSelectedProject(context);
+        Configuration projectConfig = selectedProject.getFacet(ConfigurationFacet.class).getConfiguration();
         projectConfig.setProperty(HANA_CLOUD_SDK, sdkLocation.getValue().getFullyQualifiedName()
                 .replace("\\/", "/"));
         projectConfig.setProperty(HANA_CLOUD_ACCOUNT, account.getValue());
         projectConfig.setProperty(HANA_CLOUD_USER_NAME, userName.getValue());
-        facetFactory.install(getSelectedProject(context), SapHanaCloudFacet.class);
+        facetFactory.install(selectedProject, SapHanaCloudFacet.class);
         return Results.success("SAP HANA Cloud configured successfully for this project!");
     }
 
