@@ -2,7 +2,7 @@ package com.sap.cloud.forge.client;
 
 import java.io.File;
 
-public class OsProcessExecutor {
+class OsProcessExecutor {
 
     static void execute(File workingDirectory, String command, String[] parameters)
             throws Exception {

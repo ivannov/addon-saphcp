@@ -4,6 +4,8 @@ import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_ACCOUNT;
 import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_SDK;
 import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_USER_NAME;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 import org.jboss.forge.addon.configuration.Configuration;
@@ -24,6 +26,8 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
 
 import com.sap.cloud.forge.SapHanaCloudFacet;
+import com.sap.cloud.forge.client.SapHanaCloudClient;
+import com.sap.cloud.forge.client.SapHanaCloudCommandLineClient;
 
 public class SetupCommand extends AbstractSapHanaCloudCommand {
 
@@ -56,12 +60,21 @@ public class SetupCommand extends AbstractSapHanaCloudCommand {
     public Result execute(UIExecutionContext context) {
         Project selectedProject = getSelectedProject(context);
         Configuration projectConfig = getProjectConfig(context);
-        projectConfig.setProperty(HANA_CLOUD_SDK, sdkLocation.getValue().getFullyQualifiedName()
-                .replace("\\/", "/"));
+        String sdkPath = sdkLocation.getValue().getFullyQualifiedName()
+                .replace("\\/", "/");
+        projectConfig.setProperty(HANA_CLOUD_SDK, sdkPath);
         projectConfig.setProperty(HANA_CLOUD_ACCOUNT, account.getValue());
         projectConfig.setProperty(HANA_CLOUD_USER_NAME, userName.getValue());
+        installLocalRuntime(sdkPath);
         facetFactory.install(selectedProject, SapHanaCloudFacet.class);
         return Results.success("SAP HANA Cloud configured successfully for this project!");
+    }
+
+    private void installLocalRuntime(String sdkPath) {
+        if (!new File(sdkPath, "server").exists()) {
+            SapHanaCloudClient client = new SapHanaCloudCommandLineClient(new File(sdkPath), sdkPath);
+            client.installLocal();
+        }        
     }
 
     @Override

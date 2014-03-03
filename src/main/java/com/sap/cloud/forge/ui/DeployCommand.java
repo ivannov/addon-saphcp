@@ -4,6 +4,8 @@ import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_ACCOUNT;
 import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_SDK;
 import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_USER_NAME;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 import org.jboss.forge.addon.configuration.Configuration;
@@ -59,7 +61,9 @@ public class DeployCommand extends AbstractSapHanaCloudCommand {
             String application = getSelectedProject(context).getFacet(MetadataFacet.class).getProjectName();
             String archiveLocation = getSelectedProject(context).getFacet(PackagingFacet.class).getFinalArtifact()
                     .getFullyQualifiedName().replace("\\/", "/");
-
+            if (!new File(archiveLocation).exists()) {
+                return Results.fail("You should first build the project before trying to deploy it");
+            }
             hcpClient.stopRemote(application, account, userName, password);
             hcpClient.deployRemote(application, archiveLocation, account, userName, password);
             hcpClient.startRemote(application, account, userName, password);

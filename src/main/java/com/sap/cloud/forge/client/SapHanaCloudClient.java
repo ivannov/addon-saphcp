@@ -10,4 +10,6 @@ public interface SapHanaCloudClient {
     
     public void deployRemote(String application, String archiveLocation, String account, 
             String userName, String password) throws SapHanaCloudClientException;
+    
+    public void installLocal() throws SapHanaCloudClientException;
 }

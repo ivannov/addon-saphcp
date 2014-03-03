@@ -15,6 +15,7 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
     static final String CLIENT_LIBS_SUBDIR = "tools/lib/cmd";
     static final String CLIENT_MAIN_CLASS = "com.sap.jpaas.infrastructure.console.ConsoleClient";
     static final String DEFAULT_HOST = "https://nwtrial.ondemand.com";
+    static final String INSTALL_LOCALL_CMD = "install-local";
 
     private File workDir;
     private String sdkLocation;
@@ -40,8 +41,13 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
     @Override
     public void deployRemote(String application, String archiveLocation, String account,
             String userName, String password) throws SapHanaCloudClientException {
-        runHanaCloudClient(getHanaCloudClientParams(application, null, DEPLOY_CMD, 
+        runHanaCloudClient(getHanaCloudClientParams(application, archiveLocation, DEPLOY_CMD, 
                 account, userName, password));
+    }
+    
+    @Override
+    public void installLocal() throws SapHanaCloudClientException {
+        runHanaCloudClient(getHanaCloudClientParams(INSTALL_LOCALL_CMD));
     }
 
     private String runHanaCloudClient(String[] parameters) throws SapHanaCloudClientException {
@@ -57,17 +63,21 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
         return command;
     }
 
+    private String[] getHanaCloudClientParams(String command) {
+        List<String> commonParameters = getCommonParameters(command);
+        
+        return commonParameters.toArray(new String[commonParameters.size()]);
+    }
+    
     private String[] getHanaCloudClientParams(String applicationName, String archiveLocation,
             String command, String account, String userName, String password) {
         if (OperatingSystemUtils.isWindows()) {
             archiveLocation = archiveLocation.replace('/', '\\');
         }
 
-        List<String> commonParameters = Arrays.asList("-cp", getClassPath(sdkLocation),
-                CLIENT_MAIN_CLASS, command, "--host", DEFAULT_HOST, "--account", account, "--user",
-                userName, "--application", applicationName, "--password", password);
-
-        List<String> parameters = new ArrayList<String>(commonParameters);
+        List<String> parameters = new ArrayList<String>(getCommonParameters(command));
+        parameters.addAll(Arrays.asList("--host", DEFAULT_HOST, "--account", account, "--user",
+                userName, "--application", applicationName, "--password", password));
         if (command.equals(DEPLOY_CMD)) {
             parameters.add("--source");
             parameters.add(archiveLocation);
@@ -76,6 +86,11 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
         }
 
         return parameters.toArray(new String[parameters.size()]);
+    }
+    
+    private List<String> getCommonParameters(String command) {
+        return Arrays.asList("-cp", getClassPath(sdkLocation),
+                CLIENT_MAIN_CLASS, command);
     }
 
     private String getClassPath(String sdkLocation) {
