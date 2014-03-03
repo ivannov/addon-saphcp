@@ -38,7 +38,9 @@ public class DeployCommand extends AbstractSapHanaCloudCommand {
 
     @Override
     public void initializeUI(UIBuilder builder) throws Exception {
-        builder.add(password);
+        if (builder.getUIContext().getProvider().isGUI()) {            
+            builder.add(password);
+        }
     }
 
     @Override
@@ -47,7 +49,11 @@ public class DeployCommand extends AbstractSapHanaCloudCommand {
         String sdkLocation = projectConfig.getSdkLocation();
         String account = projectConfig.getAccount();
         String userName = projectConfig.getUserName();
+        
         String password = this.password.getValue();
+        if (!context.getUIContext().getProvider().isGUI()) {
+            password = context.getPrompt().promptSecret("SAP HCP User Password: ");
+        }
         
         SapHanaCloudClient hcpClient = new SapHanaCloudCommandLineClient(
                 getSelectedProject(context).getRootDirectory().getUnderlyingResourceObject(),
