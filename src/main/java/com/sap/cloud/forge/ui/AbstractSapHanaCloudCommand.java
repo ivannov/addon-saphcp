@@ -1,4 +1,4 @@
-package com.sap.cloud.forge;
+package com.sap.cloud.forge.ui;
 
 import java.io.File;
 

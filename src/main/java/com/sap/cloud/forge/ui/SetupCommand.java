@@ -1,8 +1,8 @@
-package com.sap.cloud.forge;
+package com.sap.cloud.forge.ui;
 
-import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_ACCOUNT;
-import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_SDK;
-import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_USER_NAME;
+import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_ACCOUNT;
+import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_SDK;
+import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_USER_NAME;
 
 import javax.inject.Inject;
 
@@ -22,6 +22,8 @@ import org.jboss.forge.addon.ui.metadata.WithAttributes;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
+
+import com.sap.cloud.forge.SapHanaCloudFacet;
 
 public class SetupCommand extends AbstractSapHanaCloudCommand {
 

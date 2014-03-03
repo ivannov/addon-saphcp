@@ -1,6 +1,6 @@
-package com.sap.cloud.forge;
+package com.sap.cloud.forge.ui;
 
-import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_SDK;
+import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_SDK;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +17,8 @@ import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
+
+import com.sap.cloud.forge.SapHanaCloudFacet;
 
 @FacetConstraint(SapHanaCloudFacet.class)
 public class DeployLocallyCommand extends AbstractSapHanaCloudCommand {
