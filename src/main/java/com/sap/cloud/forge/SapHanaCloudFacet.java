@@ -14,19 +14,15 @@ public class SapHanaCloudFacet extends AbstractFacet<Project> implements Project
 
     static final String SDK_DEPENDENCY = "com.sap.cloud:neo-javaee6-wp-api:2.25.7";
 
-    private DependencyInstaller dependencyInstaller;
-
     @Inject
-    public SapHanaCloudFacet(DependencyInstaller dependencyInstaller) {
-        this.dependencyInstaller = dependencyInstaller;
-    }
+    private DependencyInstaller dependencyInstaller;
 
     @Override
     public boolean install() {
         if (!isInstalled()) {
             dependencyInstaller.install(getFaceted(), buildHanaSdkDependency());
         }
-        return false;
+        return true;
     }
 
     @Override

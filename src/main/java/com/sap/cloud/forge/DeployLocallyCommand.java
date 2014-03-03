@@ -6,9 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import javax.inject.Inject;
-
-import org.jboss.forge.addon.configuration.Configuration;
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.addon.projects.facets.PackagingFacet;
 import org.jboss.forge.addon.resource.DirectoryResource;
@@ -36,20 +33,20 @@ public class DeployLocallyCommand extends AbstractSapHanaCloudCommand {
     public void initializeUI(UIBuilder builder) throws Exception {
     }
 
-    @Inject
-    private Configuration projectConfig;
-
     @Override
     public Result execute(UIExecutionContext context) {
-        DirectoryResource sdkLocation = toDirectoryResource(projectConfig.getString(HANA_CLOUD_SDK));
+        DirectoryResource sdkLocation = toDirectoryResource(getProjectConfig(context).getString(HANA_CLOUD_SDK));
         PackagingFacet packagingFacet = getSelectedProject(context).getFacet(PackagingFacet.class);
         File deployableArchive = new File(packagingFacet.getFinalArtifact().getFullyQualifiedName());
+        if (!deployableArchive.exists()) {
+            return Results.fail("You should first build the project before trying to deploy it");
+        }
         FileResource<?> deployFile = (FileResource<?>) sdkLocation.getChild(PICKUP_DIRECTORY)
                 .getChild(deployableArchive.getName());
         try {
             deployFile.setContents(new FileInputStream(deployableArchive));
         } catch (FileNotFoundException e) {
-            Results.fail(e.getMessage());
+            return Results.fail(e.getMessage());
         }
 
         return Results.success("The project was deployed successfully on the local runtime");

@@ -44,7 +44,7 @@ public class DeployCommand extends AbstractSapHanaCloudCommand {
 
     @Override
     public UICommandMetadata getMetadata(UIContext context) {
-        return Metadata.from(super.getMetadata(context), this.getClass()).name("SAP HCP: Deploy");
+        return Metadata.from(super.getMetadata(context), this.getClass()).name("SAPHCP: Deploy");
     }
 
     @Override
@@ -52,11 +52,9 @@ public class DeployCommand extends AbstractSapHanaCloudCommand {
         builder.add(password);
     }
 
-    @Inject
-    private Configuration projectConfig;
-
     @Override
     public Result execute(UIExecutionContext context) {
+        Configuration projectConfig = getProjectConfig(context);
         String sdkLocation = projectConfig.getString(HANA_CLOUD_SDK);
         String account = projectConfig.getString(HANA_CLOUD_ACCOUNT);
         String userName = projectConfig.getString(HANA_CLOUD_USER_NAME);

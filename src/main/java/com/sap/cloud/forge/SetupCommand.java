@@ -7,7 +7,6 @@ import static com.sap.cloud.forge.ConfigurationConstants.HANA_CLOUD_USER_NAME;
 import javax.inject.Inject;
 
 import org.jboss.forge.addon.configuration.Configuration;
-import org.jboss.forge.addon.configuration.facets.ConfigurationFacet;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.PackagingFacet;
@@ -54,7 +53,7 @@ public class SetupCommand extends AbstractSapHanaCloudCommand {
     @Override
     public Result execute(UIExecutionContext context) {
         Project selectedProject = getSelectedProject(context);
-        Configuration projectConfig = selectedProject.getFacet(ConfigurationFacet.class).getConfiguration();
+        Configuration projectConfig = getProjectConfig(context);
         projectConfig.setProperty(HANA_CLOUD_SDK, sdkLocation.getValue().getFullyQualifiedName()
                 .replace("\\/", "/"));
         projectConfig.setProperty(HANA_CLOUD_ACCOUNT, account.getValue());
