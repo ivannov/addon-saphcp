@@ -1,14 +1,9 @@
 package com.sap.cloud.forge.ui;
 
-import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_ACCOUNT;
-import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_SDK;
-import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_USER_NAME;
-
 import java.io.File;
 
 import javax.inject.Inject;
 
-import org.jboss.forge.addon.configuration.Configuration;
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.addon.projects.facets.MetadataFacet;
 import org.jboss.forge.addon.projects.facets.PackagingFacet;
@@ -27,6 +22,7 @@ import com.sap.cloud.forge.SapHanaCloudFacet;
 import com.sap.cloud.forge.client.SapHanaCloudClient;
 import com.sap.cloud.forge.client.SapHanaCloudClientException;
 import com.sap.cloud.forge.client.SapHanaCloudCommandLineClient;
+import com.sap.cloud.forge.ui.config.ProjectConfiguration;
 
 @FacetConstraint(SapHanaCloudFacet.class)
 public class DeployCommand extends AbstractSapHanaCloudCommand {
@@ -47,10 +43,10 @@ public class DeployCommand extends AbstractSapHanaCloudCommand {
 
     @Override
     public Result execute(UIExecutionContext context) {
-        Configuration projectConfig = getProjectConfig(context);
-        String sdkLocation = projectConfig.getString(HANA_CLOUD_SDK);
-        String account = projectConfig.getString(HANA_CLOUD_ACCOUNT);
-        String userName = projectConfig.getString(HANA_CLOUD_USER_NAME);
+        ProjectConfiguration projectConfig = getProjectConfig(context);
+        String sdkLocation = projectConfig.getSdkLocation();
+        String account = projectConfig.getAccount();
+        String userName = projectConfig.getUserName();
         String password = this.password.getValue();
         
         SapHanaCloudClient hcpClient = new SapHanaCloudCommandLineClient(

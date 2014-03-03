@@ -16,6 +16,8 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
     static final String CLIENT_MAIN_CLASS = "com.sap.jpaas.infrastructure.console.ConsoleClient";
     static final String DEFAULT_HOST = "https://nwtrial.ondemand.com";
     static final String INSTALL_LOCALL_CMD = "install-local";
+    static final String START_LOCALL_CMD = "start-local";
+    static final String STOP_LOCALL_CMD = "stop-local";
 
     private File workDir;
     private String sdkLocation;
@@ -49,7 +51,18 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
     public void installLocal() throws SapHanaCloudClientException {
         runHanaCloudClient(getHanaCloudClientParams(INSTALL_LOCALL_CMD));
     }
+    
 
+    @Override
+    public void startLocal() throws SapHanaCloudClientException {
+        runHanaCloudClient(getHanaCloudClientParams(START_LOCALL_CMD));
+    }
+
+    @Override
+    public void stopLocal() throws SapHanaCloudClientException {
+        runHanaCloudClient(getHanaCloudClientParams(STOP_LOCALL_CMD));
+    }
+    
     private String runHanaCloudClient(String[] parameters) throws SapHanaCloudClientException {
         String command = "java";
         if (OperatingSystemUtils.isWindows()) {

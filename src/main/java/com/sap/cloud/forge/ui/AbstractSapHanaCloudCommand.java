@@ -4,17 +4,19 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import org.jboss.forge.addon.configuration.Configuration;
 import org.jboss.forge.addon.configuration.facets.ConfigurationFacet;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
 import org.jboss.forge.addon.resource.DirectoryResource;
 import org.jboss.forge.addon.resource.ResourceFactory;
+import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
+
+import com.sap.cloud.forge.ui.config.ProjectConfiguration;
 
 public abstract class AbstractSapHanaCloudCommand extends AbstractProjectCommand {
 
@@ -44,9 +46,13 @@ public abstract class AbstractSapHanaCloudCommand extends AbstractProjectCommand
     }
 
 
-    protected Configuration getProjectConfig(UIExecutionContext context) {
-        return getSelectedProject(context)
-                .getFacet(ConfigurationFacet.class).getConfiguration();
+    protected ProjectConfiguration getProjectConfig(UIExecutionContext context) {
+        return new ProjectConfiguration(getSelectedProject(context)
+                .getFacet(ConfigurationFacet.class).getConfiguration());
     }
 
+
+    @Override
+    public void initializeUI(UIBuilder arg0) throws Exception {
+    }
 }

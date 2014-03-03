@@ -1,7 +1,5 @@
 package com.sap.cloud.forge.ui;
 
-import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_SDK;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,7 +8,6 @@ import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.addon.projects.facets.PackagingFacet;
 import org.jboss.forge.addon.resource.DirectoryResource;
 import org.jboss.forge.addon.resource.FileResource;
-import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
@@ -32,12 +29,8 @@ public class DeployLocallyCommand extends AbstractSapHanaCloudCommand {
     }
 
     @Override
-    public void initializeUI(UIBuilder builder) throws Exception {
-    }
-
-    @Override
     public Result execute(UIExecutionContext context) {
-        DirectoryResource sdkLocation = toDirectoryResource(getProjectConfig(context).getString(HANA_CLOUD_SDK));
+        DirectoryResource sdkLocation = toDirectoryResource(getProjectConfig(context).getSdkLocation());
         PackagingFacet packagingFacet = getSelectedProject(context).getFacet(PackagingFacet.class);
         File deployableArchive = new File(packagingFacet.getFinalArtifact().getFullyQualifiedName());
         if (!deployableArchive.exists()) {

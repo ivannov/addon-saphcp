@@ -1,14 +1,9 @@
 package com.sap.cloud.forge.ui;
 
-import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_ACCOUNT;
-import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_SDK;
-import static com.sap.cloud.forge.ui.ConfigurationConstants.HANA_CLOUD_USER_NAME;
-
 import java.io.File;
 
 import javax.inject.Inject;
 
-import org.jboss.forge.addon.configuration.Configuration;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.PackagingFacet;
@@ -28,6 +23,7 @@ import org.jboss.forge.addon.ui.util.Metadata;
 import com.sap.cloud.forge.SapHanaCloudFacet;
 import com.sap.cloud.forge.client.SapHanaCloudClient;
 import com.sap.cloud.forge.client.SapHanaCloudCommandLineClient;
+import com.sap.cloud.forge.ui.config.ProjectConfiguration;
 
 public class SetupCommand extends AbstractSapHanaCloudCommand {
 
@@ -59,12 +55,12 @@ public class SetupCommand extends AbstractSapHanaCloudCommand {
     @Override
     public Result execute(UIExecutionContext context) {
         Project selectedProject = getSelectedProject(context);
-        Configuration projectConfig = getProjectConfig(context);
+        ProjectConfiguration projectConfig = getProjectConfig(context);
         String sdkPath = sdkLocation.getValue().getFullyQualifiedName()
                 .replace("\\/", "/");
-        projectConfig.setProperty(HANA_CLOUD_SDK, sdkPath);
-        projectConfig.setProperty(HANA_CLOUD_ACCOUNT, account.getValue());
-        projectConfig.setProperty(HANA_CLOUD_USER_NAME, userName.getValue());
+        projectConfig.setSdkLocation(sdkPath);
+        projectConfig.setAccount(account.getValue());
+        projectConfig.setUserName(userName.getValue());
         installLocalRuntime(sdkPath);
         facetFactory.install(selectedProject, SapHanaCloudFacet.class);
         return Results.success("SAP HANA Cloud configured successfully for this project!");

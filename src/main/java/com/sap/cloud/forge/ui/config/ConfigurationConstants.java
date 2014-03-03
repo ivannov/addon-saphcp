@@ -1,4 +1,4 @@
-package com.sap.cloud.forge.ui;
+package com.sap.cloud.forge.ui.config;
 
 public final class ConfigurationConstants {
 

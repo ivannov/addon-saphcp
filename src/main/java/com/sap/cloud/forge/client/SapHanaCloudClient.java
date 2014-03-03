@@ -12,4 +12,8 @@ public interface SapHanaCloudClient {
             String userName, String password) throws SapHanaCloudClientException;
     
     public void installLocal() throws SapHanaCloudClientException;
+    
+    public void startLocal() throws SapHanaCloudClientException;
+    
+    public void stopLocal() throws SapHanaCloudClientException;
 }
