@@ -61,8 +61,18 @@ public class SetupCommand extends AbstractSapHanaCloudCommand {
         projectConfig.setSdkLocation(sdkPath);
         projectConfig.setAccount(account.getValue());
         projectConfig.setUserName(userName.getValue());
+        
+        context.getProgressMonitor().beginTask("Setup SAP HCP", 2);
+        
+        context.getProgressMonitor().subTask("Installing local runtime");
         installLocalRuntime(sdkPath);
+        context.getProgressMonitor().worked(1);
+        
+        context.getProgressMonitor().subTask("Adding dependencies");
         facetFactory.install(selectedProject, SapHanaCloudFacet.class);
+        context.getProgressMonitor().worked(1);
+        
+        context.getProgressMonitor().done();
         return Results.success("SAP HANA Cloud configured successfully for this project!");
     }
 

@@ -60,9 +60,21 @@ public class DeployCommand extends AbstractSapHanaCloudCommand {
             if (!new File(archiveLocation).exists()) {
                 return Results.fail("You should first build the project before trying to deploy it");
             }
+            context.getProgressMonitor().beginTask("Deploy", 3);
+
+            context.getProgressMonitor().subTask("Stopping remote application");
             hcpClient.stopRemote(application, account, userName, password);
+            context.getProgressMonitor().worked(1);
+
+            context.getProgressMonitor().subTask("Deploying");
             hcpClient.deployRemote(application, archiveLocation, account, userName, password);
+            context.getProgressMonitor().worked(1);
+
+            context.getProgressMonitor().subTask("Starting remote application");
             hcpClient.startRemote(application, account, userName, password);
+            context.getProgressMonitor().worked(1);
+            
+            context.getProgressMonitor().done();
         } catch (SapHanaCloudClientException shcce) {
             return Results.fail(shcce.getMessage());
         }
