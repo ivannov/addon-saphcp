@@ -55,21 +55,25 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
 
     @Override
     public void startLocal() throws SapHanaCloudClientException {
-        runHanaCloudClient(getHanaCloudClientParams(START_LOCALL_CMD));
+        runHanaCloudClient(getHanaCloudClientParams(START_LOCALL_CMD), !OperatingSystemUtils.isWindows());
     }
 
     @Override
     public void stopLocal() throws SapHanaCloudClientException {
         runHanaCloudClient(getHanaCloudClientParams(STOP_LOCALL_CMD));
     }
-    
+
     private String runHanaCloudClient(String[] parameters) throws SapHanaCloudClientException {
+	return runHanaCloudClient(parameters, true);
+    }
+
+    private String runHanaCloudClient(String[] parameters, boolean waitFor) throws SapHanaCloudClientException {
         String command = "java";
         if (OperatingSystemUtils.isWindows()) {
             command += ".exe";
         }
         try {
-            OsProcessExecutor.execute(workDir, command, parameters);
+            OsProcessExecutor.execute(workDir, command, parameters, waitFor);
         } catch (Exception e) {
             throw new SapHanaCloudClientException("Could not execute command. Reason: " + e.getMessage(), e);
         }
@@ -84,14 +88,13 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
     
     private String[] getHanaCloudClientParams(String applicationName, String archiveLocation,
             String command, String account, String userName, String password) {
-        if (OperatingSystemUtils.isWindows()) {
-            archiveLocation = archiveLocation.replace('/', '\\');
-        }
-
         List<String> parameters = new ArrayList<String>(getCommonParameters(command));
         parameters.addAll(Arrays.asList("--host", DEFAULT_HOST, "--account", account, "--user",
                 userName, "--application", applicationName, "--password", password));
         if (command.equals(DEPLOY_CMD)) {
+            if (OperatingSystemUtils.isWindows()) {
+                archiveLocation = archiveLocation.replace('/', '\\');
+            }
             parameters.add("--source");
             parameters.add(archiveLocation);
         } else if (command.equals(START_CMD) || command.equals(STOP_CMD)) {

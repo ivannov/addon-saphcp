@@ -4,7 +4,7 @@ import java.io.File;
 
 class OsProcessExecutor {
 
-    static void execute(File workingDirectory, String command, String[] parameters)
+    static void execute(File workingDirectory, String command, String[] parameters, boolean waitFor)
             throws Exception {
         String[] commandTokens = parameters == null ? new String[1]
                 : new String[parameters.length + 1];
@@ -18,6 +18,8 @@ class OsProcessExecutor {
         builder.directory(workingDirectory);
         builder.redirectErrorStream(true);
         Process p = builder.start();
-        p.waitFor();
+        if (waitFor) {
+            p.waitFor();
+        }
     }
 }
