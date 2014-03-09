@@ -19,12 +19,10 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
     static final String START_LOCALL_CMD = "start-local";
     static final String STOP_LOCALL_CMD = "stop-local";
 
-    private File workDir;
-    private String sdkLocation;
+    private final File workDir;
     
-    public SapHanaCloudCommandLineClient(File workDir, String sdkLocation) {
-        this.workDir = workDir;
-        this.sdkLocation = sdkLocation;
+    public SapHanaCloudCommandLineClient(String sdkLocation) {
+        this.workDir = new File(sdkLocation, "tools");
     }
 
     @Override
@@ -64,14 +62,14 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
     }
 
     private String runHanaCloudClient(String[] parameters) throws SapHanaCloudClientException {
-	return runHanaCloudClient(parameters, true);
+        return runHanaCloudClient(parameters, true);
     }
 
     private String runHanaCloudClient(String[] parameters, boolean waitFor) throws SapHanaCloudClientException {
-        String command = "java";
+        String command = "./neo.sh";
         if (OperatingSystemUtils.isWindows()) {
-            command += ".exe";
-        }
+            command = "neo.bat";
+        } 
         try {
             OsProcessExecutor.execute(workDir, command, parameters, waitFor);
         } catch (Exception e) {
@@ -81,15 +79,13 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
     }
 
     private String[] getHanaCloudClientParams(String command) {
-        List<String> commonParameters = getCommonParameters(command);
-        
-        return commonParameters.toArray(new String[commonParameters.size()]);
+        return new String[] {command};
     }
     
     private String[] getHanaCloudClientParams(String applicationName, String archiveLocation,
             String command, String account, String userName, String password) {
-        List<String> parameters = new ArrayList<String>(getCommonParameters(command));
-        parameters.addAll(Arrays.asList("--host", DEFAULT_HOST, "--account", account, "--user",
+        List<String> parameters = new ArrayList<>();
+        parameters.addAll(Arrays.asList(command, "--host", DEFAULT_HOST, "--account", account, "--user",
                 userName, "--application", applicationName, "--password", password));
         if (command.equals(DEPLOY_CMD)) {
             if (OperatingSystemUtils.isWindows()) {
@@ -102,25 +98,5 @@ public class SapHanaCloudCommandLineClient implements SapHanaCloudClient {
         }
 
         return parameters.toArray(new String[parameters.size()]);
-    }
-    
-    private List<String> getCommonParameters(String command) {
-        return Arrays.asList("-cp", getClassPath(sdkLocation),
-                CLIENT_MAIN_CLASS, command);
-    }
-
-    private String getClassPath(String sdkLocation) {
-        StringBuilder classpath = new StringBuilder();
-
-        File libsDir = new File(sdkLocation, CLIENT_LIBS_SUBDIR);
-        File[] content = libsDir.listFiles();
-
-        for (File libFile : content) {
-            if (libFile.isFile() && libFile.getName().endsWith(".jar")) {
-                classpath.append(libFile.getAbsolutePath()).append(File.pathSeparator);
-            }
-        }
-
-        return classpath.toString();
     }
 }

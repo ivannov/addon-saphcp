@@ -78,7 +78,7 @@ public class SetupCommand extends AbstractSapHanaCloudCommand {
 
     private void installLocalRuntime(String sdkPath) {
         if (!new File(sdkPath, "server").exists()) {
-            SapHanaCloudClient client = new SapHanaCloudCommandLineClient(new File(sdkPath), sdkPath);
+            SapHanaCloudClient client = new SapHanaCloudCommandLineClient(sdkPath);
             client.installLocal();
         }        
     }

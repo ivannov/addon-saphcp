@@ -1,7 +1,5 @@
 package com.sap.cloud.forge.ui;
 
-import java.io.File;
-
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
@@ -28,8 +26,7 @@ public class StopLocalRuntime extends AbstractSapHanaCloudCommand {
     public Result execute(UIExecutionContext context) throws Exception {
         try {
             String sdkLocation = getProjectConfig(context).getSdkLocation();
-            SapHanaCloudClient client = new SapHanaCloudCommandLineClient(new File(sdkLocation), 
-                    sdkLocation);
+            SapHanaCloudClient client = new SapHanaCloudCommandLineClient(sdkLocation);
             client.stopLocal();
         } catch (SapHanaCloudClientException shcce) {
             return Results.fail("Could not stop local runtime: " + shcce.getMessage());

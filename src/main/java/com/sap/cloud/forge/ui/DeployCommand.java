@@ -55,9 +55,7 @@ public class DeployCommand extends AbstractSapHanaCloudCommand {
             password = context.getPrompt().promptSecret("SAP HCP User Password: ");
         }
         
-        SapHanaCloudClient hcpClient = new SapHanaCloudCommandLineClient(
-                getSelectedProject(context).getRootDirectory().getUnderlyingResourceObject(),
-                sdkLocation);
+        SapHanaCloudClient hcpClient = new SapHanaCloudCommandLineClient(sdkLocation);
 
         try {
             String application = getSelectedProject(context).getFacet(MetadataFacet.class).getProjectName();
