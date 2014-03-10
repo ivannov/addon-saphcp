@@ -12,7 +12,7 @@ import org.jboss.forge.addon.projects.facets.DependencyFacet;
 
 public class SapHanaCloudFacet extends AbstractFacet<Project> implements ProjectFacet {
 
-    static final String SDK_DEPENDENCY = "com.sap.cloud:neo-javaee6-wp-api:2.25.7";
+    static final String SDK_DEPENDENCY = "com.sap.cloud:neo-javaee6-wp-api:2.25.7:provided";
 
     @Inject
     private DependencyInstaller dependencyInstaller;
