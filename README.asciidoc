@@ -1,62 +1,64 @@
 == addon-saphcp
 :idprefix: id_ 
-(choose one, do not modify, then add a second sentence with a brief description, starting with - "The addon-saphcp addon enables blah blah...)
-This addon provides *standalone* functionality, and *exports services* for use in other addons. 
-This addon provides *standalone* functionality.
-This addon *exports services* for use in other addons. 
-This addon *provides classes* for use in other addons. 
-This addon is a 'Furnace container' that provides *lifecycle* and *service registry* support for dependent addons.
+This addon provides *standalone* functionality. The addon-saphcp addon enables deploying Java EE (web profile) applications to the SAP HANA Cloud Platform (HCP): both on the local runtime and to the cloud.
         
-=== Dependencies: None (or)
 === Depends on
 [options="header"]
 |===
 |Addon |Exported |Optional
-|DEP1
-|yes
+|projects
 |no
-|DEP2
-|yes
-|yes
+|no
+|ui
+|no
+|no
+|configuration
+|no
+|no
 |===
 
 == Setup
-This Addon requires the following installation steps.
-=== Add configuration to pom.xml 
-To use this addon, you must add it as a dependency in the *pom.xml* of your `forge-addon` classified artifact:
-(Make sure the dependency is put all the way to the left, and uses 3 spaces for indentation of GAV)
-[source,xml]
+You should download the source code of this addon, build it with Maven (Maven 3.1+ and Java 7 are required) and then install it into your existing Forge installation like that:
+[source,console]
 ----
-<dependency>
-   <groupId>org.jboss.forge.addon.saphcp</groupId>
-   <artifactId>addon-saphcp</artifactId>
-   <classifier>forge-addon</classifier>
-   <version>${version}</version>
-</dependency>
+forge --install com.sap.cloud:forge-addon,2.0.0-SNAPSHOT
 ----
+Your Forge installation should be at least version 2.1.1, due to fixes in the configuration addon, that were introduced in this release. More information on installing Forge can be found on the project Github page: https://github.com/forge/core
+
 == Features
-ABCFactory for simple ABC blah:: 
-Allows for blah blah
-+
-[source,java]
+
+Setting up the SAP HCP Addon:: 
+You should tell Forge where your SAP HCP SDK is located, which is your user name and account. You can do that from the command line:
+[source,console]
 ----
-@Inject private ABCFactory factory;
-ABC abc = factory.createABC();
+saphcp-setup --sdkLocation <sdk-location> --userName <user-name> --account <account>
 ----
-+
-[TIP] 
-====
-If your addon uses a container that does not support "@Inject" annotations, services such as the `ABCFactory` may also be 
-accessed via the `AddonRegistry`:
+or in the Forge menu in your IDE (Ctrl+5), choose *SAPHCP: Setup*.
+
+This command is only available if you are in the context of a web project. It will check whether your SDK has a local runtime installed and if not, Forge will install it for you.
+
+Starting and stopping the local runtime:: 
+Once you have set up your SAP HANA Cloud Platform addon, you can start and stop the local runtime:
+[source,console]
 ----
-Imported<ABCFactory> imported = addonRegistry.getServices(ABCFactory.class);
-ABCFactory factory = imported.get();
+saphcp-start-local-runtime
+saphcp-stop-local-runtime
 ----
-==== 
-Creating a new XYZ instance:: 
-Causes XYZ to occur
-+
-[source,java]
+Or alternatively choose *SAPHCP: Start Local Runtime* and *SAPHCP: Stop Local Runtime* respectively form the Forge menu in the IDE.
+
+Deploying:: 
+The essence of the SAP HCP Forge addon is the deployment part. After you have built your Java EE application you can deploy it both on the local runtime and to your cloud account. The command for the first operation is:
+[source,console]
 ----
-XYZ xyz = factory.createXYZ();
+saphcp-deploy-locally
 ----
+Or from the IDE: *SAPHCP: Deploy Locally*
+
+The command for cloud deployment is:
+[source,console]
+----
+saphcp-deploy
+----
+And respectively *SAPHCP: Deploy* from the IDE.
+
+As for security reasons Forge does not store your user password, you will be prompted to enter it upon every cloud deploy request. Forge will then stop the remote application, deploy it and start it again.
