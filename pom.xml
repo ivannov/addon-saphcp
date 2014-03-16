@@ -6,46 +6,16 @@
   <artifactId>forge-addon</artifactId>
   <version>2.0.0-SNAPSHOT</version>
   <properties>
-    <version.furnace>2.0.0.Final</version.furnace>
+    <version.furnace>2.2.0.Final</version.furnace>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.jboss.forge.furnace.container</groupId>
-        <artifactId>cdi</artifactId>
-        <version>2.1.1.Final</version>
-        <classifier>forge-addon</classifier>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.forge.furnace.test</groupId>
-        <artifactId>furnace-test-harness</artifactId>
-        <version>2.1.1.Final</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.forge.furnace.test</groupId>
-        <artifactId>arquillian-furnace-classpath</artifactId>
-        <version>2.1.1.Final</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.forge.addon</groupId>
-        <artifactId>configuration</artifactId>
-        <version>2.1.1.Final</version>
-        <classifier>forge-addon</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.forge.addon</groupId>
-        <artifactId>ui</artifactId>
-        <version>2.1.1.Final</version>
-        <classifier>forge-addon</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.forge.addon</groupId>
-        <artifactId>projects</artifactId>
-        <version>2.1.1.Final</version>
-        <classifier>forge-addon</classifier>
+        <groupId>org.jboss.forge</groupId>
+        <artifactId>forge-bom</artifactId>
+        <version>${version.furnace}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
